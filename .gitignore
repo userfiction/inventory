@@ -1,0 +1,25 @@
+# ============================================================================
+# .gitignore — build artifacts, dependency and cache dirs never get pushed
+# ============================================================================
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+coverage/
+*.tsbuildinfo
+
+# Tooling caches
+.turbo/
+.eslintcache
+.vite/
+
+# Package-manager logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS junk
+.DS_Store
+Thumbs.db
