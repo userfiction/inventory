@@ -1,0 +1,20 @@
+{
+    // Declaration-emit config for the npm build (`tsc -p tsconfig.build.json`).
+    // Extends the package tsconfig (which is self-contained, mirroring the
+    // noobscript workspace root) but:
+    // - emits ONLY .d.ts into dist/ (JS comes from `vite build`, same split as
+    //   @userfiction/core / @userfiction/combat);
+    // - excludes every test file: the tsconfig only excludes
+    //   `**/*.test.ts`, so `.test.tsx` files would otherwise emit d.ts files
+    //   importing vitest/@testing-library — broken declaration references for
+    //   npm consumers (R6);
+    // - excludes vite.config.ts so it never lands in dist.
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "emitDeclarationOnly": true,
+        "declaration": true,
+        "rootDir": ".",
+        "outDir": "dist"
+    },
+    "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx", "vite.config.ts"]
+}
