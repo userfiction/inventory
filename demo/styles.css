@@ -1,0 +1,223 @@
+/* ============================================================================
+   demo/styles.css — vanilla CSS for the @userfiction/inventory demo
+   Accessibility baseline (same as the combat demo): real <button>s (markup),
+   visible focus, prefers-reduced-motion respected (animations/transitions
+   disabled). All dynamic text is rendered via textContent by main.ts — this
+   file only styles structure.
+============================================================================ */
+
+:root {
+    color-scheme: dark;
+    --bg: #14161c;
+    --panel: #1d2028;
+    --panel-2: #232733;
+    --text: #e6e9f0;
+    --muted: #9aa3b5;
+    --accent: #7aa2ff;
+    --good: #57c98a;
+    --bad: #e06c75;
+    --radius: 8px;
+    --gap: 12px;
+    --mono: ui-monospace, Consolas, Menlo, monospace;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font:
+        14px/1.45 system-ui,
+        'Segoe UI',
+        sans-serif;
+}
+
+.top {
+    padding: 16px 20px 8px;
+}
+
+.top h1 {
+    margin: 0 0 4px;
+    font-size: 20px;
+}
+
+.trust {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    max-width: 110ch;
+}
+
+.trust code {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+}
+
+/* Two-column app layout; collapses to one column on narrow screens */
+.layout {
+    display: grid;
+    grid-template-columns: minmax(320px, 420px) minmax(320px, 460px);
+    gap: var(--gap);
+    padding: var(--gap) 20px 24px;
+    align-items: start;
+    justify-content: center;
+}
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    min-width: 0;
+}
+
+.panel {
+    background: var(--panel);
+    border: 1px solid #2b303c;
+    border-radius: var(--radius);
+    padding: 12px 14px;
+}
+
+.panel h2 {
+    margin: 0 0 10px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+}
+
+/* --- forms ---------------------------------------------------------------- */
+
+.form-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+input,
+button {
+    font: inherit;
+    color: inherit;
+    background: var(--panel-2);
+    border: 1px solid #3a4152;
+    border-radius: 6px;
+}
+
+input[type='text'] {
+    flex: 2;
+    min-width: 0;
+    padding: 6px 8px;
+}
+
+input[type='number'] {
+    flex: 1;
+    min-width: 0;
+    max-width: 5.5em;
+    padding: 6px 8px;
+}
+
+button {
+    padding: 6px 12px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+button:hover {
+    border-color: var(--accent);
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+/* --- bag tables ------------------------------------------------------------ */
+
+table.bag {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 4px;
+}
+
+table.bag td {
+    padding: 4px 6px;
+    border-bottom: 1px solid #2b303c;
+}
+
+table.bag td.count {
+    font-family: var(--mono);
+    color: var(--accent);
+    text-align: right;
+    width: 4em;
+}
+
+table.bag td.empty {
+    color: var(--muted);
+    font-style: italic;
+}
+
+table.bag td.total {
+    color: var(--muted);
+    font-size: 12px;
+    border-bottom: none;
+}
+
+/* --- exchange -------------------------------------------------------------- */
+
+.exchange .form-row {
+    margin-bottom: 8px;
+}
+
+.exchange button {
+    width: 100%;
+}
+
+.exchange-caption {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* --- log ------------------------------------------------------------------- */
+
+.log {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.log-line {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: var(--panel-2);
+    color: var(--text);
+    overflow-wrap: anywhere;
+}
+
+.log-line.refused {
+    color: var(--bad);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

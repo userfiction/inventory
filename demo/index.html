@@ -1,0 +1,66 @@
+<!doctype html>
+<!-- ============================================================================
+     demo/index.html — single-page shell for the @userfiction/inventory demo
+     Vanilla HTML/CSS/TS only: no framework, no backend, no fetch. Every
+     panel's DOM is BUILT by demo/main.ts into the mount points below, so the
+     shell stays a stable skeleton (same structure as the combat demo).
+
+     The demo exercises ONLY the public surface (createUserInventory → add /
+     remove). Bag READS go straight to the wrapped original objects: the
+     facade deliberately has no read API — the caller's object IS the
+     inventory, and the demo shows exactly that.
+============================================================================ -->
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>@userfiction/inventory — bag facade demo</title>
+        <link rel="stylesheet" href="./styles.css" />
+    </head>
+    <body>
+        <header class="top">
+            <h1>Userfiction Inventory — bag facade demo</h1>
+            <p class="trust">
+                <code>createUserInventory(bag)</code> closes over the ORIGINAL plain object — every
+                <code>add</code>/<code>remove</code> mutates it in place, no wrapper state, no copies.
+                <code>remove</code> is atomic: when the bag cannot afford it, nothing changes and
+                <code>false</code> is returned — never a partial removal. All dynamic text is
+                rendered via <code>textContent</code>; nothing here executes JSON or remote data.
+            </p>
+        </header>
+
+        <main class="layout">
+            <div class="col">
+                <!-- main.ts mounts the live bag table + add/remove forms per owner -->
+                <section class="panel" aria-label="Hero inventory">
+                    <h2>Hero</h2>
+                    <div id="hero-bag"></div>
+                    <div id="hero-forms"></div>
+                </section>
+
+                <section class="panel" aria-label="Merchant inventory">
+                    <h2>Merchant</h2>
+                    <div id="merchant-bag"></div>
+                    <div id="merchant-forms"></div>
+                </section>
+            </div>
+
+            <div class="col">
+                <!-- main.ts mounts the two-way trade form (composed from the
+                     public add/remove on both wrapped bags) -->
+                <section class="panel" aria-label="Exchange">
+                    <h2>Exchange (hero ⇄ merchant)</h2>
+                    <div id="exchange-mount"></div>
+                </section>
+
+                <section class="panel" aria-label="Operation log">
+                    <h2>Log</h2>
+                    <!-- aria-live=polite mandated by the demo a11y baseline -->
+                    <div id="log" class="log" aria-live="polite"></div>
+                </section>
+            </div>
+        </main>
+
+        <script type="module" src="./main.ts"></script>
+    </body>
+</html>

@@ -8,7 +8,12 @@
     //   `**/*.test.ts`, so `.test.tsx` files would otherwise emit d.ts files
     //   importing vitest/@testing-library — broken declaration references for
     //   npm consumers (R6);
-    // - excludes vite.config.ts so it never lands in dist.
+    // - excludes vite.config.ts so it never lands in dist;
+    // - excludes demo/: the "vite.config.ts" pattern above matches ONLY the
+    //   root-level config, so without "demo" tsc would emit declarations for
+    //   demo/vite.config.ts and every demo source into dist/ and break the
+    //   npm build's publish surface (demo is app code, never a library
+    //   export — same rule as @userfiction/combat).
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "emitDeclarationOnly": true,
@@ -16,5 +21,5 @@
         "rootDir": ".",
         "outDir": "dist"
     },
-    "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx", "vite.config.ts"]
+    "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx", "vite.config.ts", "demo"]
 }

@@ -18,7 +18,8 @@
         "index.ts",
         "**/*.ts",
         "!**/*.test.ts",
-        "!vite.config.ts"
+        "!vite.config.ts",
+        "!demo"
     ],
     "publishConfig": {
         "access": "public",
@@ -29,6 +30,9 @@
         "prepack": "npm run build",
         "test": "vitest run",
         "typecheck": "tsc --noEmit",
+        "dev": "vite --config demo/vite.config.ts",
+        "demo:build": "vite build --config demo/vite.config.ts",
+        "demo:preview": "vite preview --config demo/vite.config.ts",
         "release": "vite-node ../../../scripts/publish-safe.ts"
     },
     "author": "NQQT",
