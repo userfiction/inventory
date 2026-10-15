@@ -16,6 +16,9 @@
         "declaration": true,
         "esModuleInterop": true,
         "strict": true,
+        // Demo imports the package version straight from ../package.json
+        // ("Userfiction Inventory vX.X.X" title) — JSON modules need this flag
+        "resolveJsonModule": true,
         "outDir": "./lib",
         "lib": ["decorators", "dom", "es5", "scripthost", "es2015.collection"],
         "types": ["node", "vitest/globals"]

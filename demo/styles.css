@@ -1,9 +1,11 @@
 /* ============================================================================
    demo/styles.css — vanilla CSS for the @userfiction/inventory demo
-   Accessibility baseline (same as the combat demo): real <button>s (markup),
-   visible focus, prefers-reduced-motion respected (animations/transitions
-   disabled). All dynamic text is rendered via textContent by main.ts — this
-   file only styles structure.
+   Presentation UI: items as draggable icon chips with hover/focus tooltips,
+   panels as drop targets, and the JSON views under each inventory.
+   Accessibility baseline: chips are focusable (tooltip shows on :focus-visible
+   too), visible focus outline, prefers-reduced-motion respected. All dynamic
+   text is rendered via textContent by main.ts — this file only styles
+   structure.
 ============================================================================ */
 
 :root {
@@ -14,8 +16,6 @@
     --text: #e6e9f0;
     --muted: #9aa3b5;
     --accent: #7aa2ff;
-    --good: #57c98a;
-    --bad: #e06c75;
     --radius: 8px;
     --gap: 12px;
     --mono: ui-monospace, Consolas, Menlo, monospace;
@@ -40,44 +40,26 @@ body {
 }
 
 .top h1 {
-    margin: 0 0 4px;
+    margin: 0;
     font-size: 20px;
 }
 
-.trust {
-    margin: 0;
-    color: var(--muted);
-    font-size: 12px;
-    max-width: 110ch;
-}
-
-.trust code {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--accent);
-}
-
-/* Two-column app layout; collapses to one column on narrow screens */
+/* App layout — two inventory panels side by side; a third+ panel flows into
+   the next row automatically (each panel IS one inventory). minmax(0, 1fr)
+   keeps wide <pre> blocks from blowing out columns. */
 .layout {
     display: grid;
-    grid-template-columns: minmax(320px, 420px) minmax(320px, 460px);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--gap);
-    padding: var(--gap) 20px 24px;
+    padding: var(--gap) clamp(12px, 2vw, 28px) 28px;
     align-items: start;
-    justify-content: center;
 }
 
-@media (max-width: 900px) {
+/* Narrow screens: single column, everything stacked in DOM order */
+@media (max-width: 919px) {
     .layout {
         grid-template-columns: 1fr;
     }
-}
-
-.col {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap);
-    min-width: 0;
 }
 
 .panel {
@@ -85,6 +67,7 @@ body {
     border: 1px solid #2b303c;
     border-radius: var(--radius);
     padding: 12px 14px;
+    min-width: 0;
 }
 
 .panel h2 {
@@ -95,121 +78,157 @@ body {
     color: var(--muted);
 }
 
-/* --- forms ---------------------------------------------------------------- */
-
-.form-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-}
-
-input,
-button {
-    font: inherit;
-    color: inherit;
-    background: var(--panel-2);
-    border: 1px solid #3a4152;
-    border-radius: 6px;
-}
-
-input[type='text'] {
-    flex: 2;
-    min-width: 0;
-    padding: 6px 8px;
-}
-
-input[type='number'] {
-    flex: 1;
-    min-width: 0;
-    max-width: 5.5em;
-    padding: 6px 8px;
-}
-
-button {
-    padding: 6px 12px;
-    cursor: pointer;
-    flex-shrink: 0;
-}
-
-button:hover {
-    border-color: var(--accent);
-}
-
 :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 1px;
 }
 
-/* --- bag tables ------------------------------------------------------------ */
+/* --- icon grid — items as draggable chips ---------------------------------- */
 
-table.bag {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 4px;
-}
-
-table.bag td {
-    padding: 4px 6px;
-    border-bottom: 1px solid #2b303c;
-}
-
-table.bag td.count {
-    font-family: var(--mono);
-    color: var(--accent);
-    text-align: right;
-    width: 4em;
-}
-
-table.bag td.empty {
-    color: var(--muted);
-    font-style: italic;
-}
-
-table.bag td.total {
-    color: var(--muted);
-    font-size: 12px;
-    border-bottom: none;
-}
-
-/* --- exchange -------------------------------------------------------------- */
-
-.exchange .form-row {
+.icon-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
     margin-bottom: 8px;
 }
 
-.exchange button {
-    width: 100%;
+/* One group per label: emoji + name + unit count, chips under it */
+.stack-group {
+    min-width: 0;
 }
 
-.exchange-caption {
-    margin: 8px 0 0;
-    color: var(--muted);
+.stack-head {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 4px;
     font-size: 12px;
 }
 
-/* --- log ------------------------------------------------------------------- */
-
-.log {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    max-height: 320px;
-    overflow-y: auto;
+.stack-head .stack-name {
+    color: var(--text);
 }
 
-.log-line {
+.stack-head .stack-count {
+    font-family: var(--mono);
+    color: var(--accent);
+}
+
+.stack-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* The chip itself: emoji tile, grab cursor, tooltip anchored inside */
+.chip {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    background: var(--panel-2);
+    border: 1px solid #3a4152;
+    border-radius: 10px;
+    cursor: grab;
+    user-select: none;
+}
+
+.chip:hover,
+.chip:focus-visible {
+    border-color: var(--accent);
+}
+
+.chip:active {
+    cursor: grabbing;
+}
+
+/* Details tooltip — hidden until hover/focus; display toggling (instead of
+   opacity) keeps it inert for assistive tech and immune to reduced-motion */
+.chip .tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    width: max-content;
+    max-width: 46ch;
+    padding: 6px 9px;
+    background: #10131a;
+    border: 1px solid #3a4152;
+    border-radius: 6px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    color: var(--text);
+    pointer-events: none;
+}
+
+.chip:hover .tooltip,
+.chip:focus-visible .tooltip {
+    display: block;
+}
+
+/* Drop-target affordance while dragging over a panel */
+.panel.drop-target {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.empty-note {
+    color: var(--muted);
+    font-style: italic;
+    margin: 0 0 8px;
+}
+
+/* --- live JSON pair (grouped per-unit view + raw wrapped original) ---------- */
+
+.json-label {
+    display: block;
+    margin: 0 0 4px;
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* A second label after a view (raw bag label under the grouped pre) needs a
+   little breathing room */
+.json-label + .json-label,
+pre.json-view + .json-label {
+    margin-top: 8px;
+}
+
+pre.json-view {
+    margin: 0 0 4px;
+    padding: 8px 10px;
+    background: var(--panel-2);
+    border: 1px solid #2b303c;
+    border-radius: 6px;
     font-family: var(--mono);
     font-size: 12px;
-    padding: 4px 8px;
-    border-radius: 6px;
-    background: var(--panel-2);
-    color: var(--text);
-    overflow-wrap: anywhere;
+    line-height: 1.5;
+    overflow: auto;
 }
 
-.log-line.refused {
-    color: var(--bad);
+/* Headline view: one entry per unit — grows with the inventory, capped so a
+   huge bag never pushes its panel past the viewport (scrolls instead) */
+pre.json-view.json-grouped {
+    max-height: 300px;
+}
+
+/* The wrapped original is short (label → count lines only) */
+pre.json-view.json-raw {
+    max-height: 120px;
+}
+
+pre.json-view code {
+    font-family: inherit;
 }
 
 @media (prefers-reduced-motion: reduce) {
