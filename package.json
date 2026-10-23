@@ -35,6 +35,9 @@
         "demo:preview": "vite preview --config demo/vite.config.ts",
         "release": "vite-node ../../../scripts/publish-safe.ts"
     },
+    "dependencies": {
+        "@presource/core": "*"
+    },
     "author": "NQQT",
     "license": "ISC",
     "devDependencies": {

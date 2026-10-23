@@ -1,12 +1,17 @@
-// Inventory primitives — copied from packages/userfiction/core/inventory/
-// inventory.ts (the canonical pure functions over a simple
-// `Record<item, count>` bag). Every operation either succeeds fully or
-// leaves both sides untouched (atomicity matters for the exchange
-// primitive: a trade is all-or-nothing).
+// Inventory primitives — the canonical pure functions over a simple
+// `Record<item, count>` bag, PUBLICLY owned by @userfiction/inventory
+// (moved here from packages/userfiction/core/inventory/inventory.ts, which
+// is gone — core no longer ships any inventory API; see src/index.ts for
+// the public barrel). distribution/StrandedIsland re-exports these
+// unchanged (src/plugins/inventory/inventory.ts). Every operation either
+// succeeds fully or leaves both sides untouched (atomicity matters for
+// the exchange primitive: a trade is all-or-nothing).
 //
-// These stay INTERNAL to the package: the public surface is the
-// `userInventory` facade (src/user-inventory.ts), so export names never
-// collide with @userfiction/core's identical primitives.
+// NOTE: this is a DIFFERENT shape from this package's `basic-inventory.ts`
+// accessor (id-keyed name/amount accessors over a shared data object). The
+// two semantics are incompatible and deliberately coexist (R3: no collapse)
+// — the bag is the plain-data currency of engine inventories, the accessor
+// is the fiction-side lazy record.
 
 /** An inventory: item id → count. Counts are always integers ≥ 0. */
 export type Inventory = Record<string, number>;
