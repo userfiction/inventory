@@ -285,11 +285,15 @@ const dropOldestTrackedToMerchant = (from: OwnerId, label: string): string => {
 // concrete minted value, only on captured ones)
 // ---------------------------------------------------------------------------
 
+// The timeout argument: the fresh ./main import below boots the whole demo
+// app (module re-execution with fresh minted ids). Under a parallel turbo
+// run the boot regularly exceeds vitest's default 10s hookTimeout, so the
+// hook carries its own generous ceiling.
 beforeEach(async () => {
     vi.resetModules();
     document.body.innerHTML = SHELL_HTML;
     await import('./main');
-});
+}, 60_000);
 
 // ---------------------------------------------------------------------------
 // 1 — title
