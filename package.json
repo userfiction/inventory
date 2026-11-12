@@ -3,31 +3,32 @@
     "version": "1.0.2",
     "description": "Inventory system for User Fiction",
     "type": "module",
-    "main": "./dist/userfiction-inventory.mjs",
-    "module": "./dist/userfiction-inventory.mjs",
-    "types": "dist/index.d.ts",
+    "main": "./src/index.ts",
+    "module": "./src/index.ts",
+    "types": "./src/index.ts",
     "exports": {
         ".": {
-            "types": "./dist/index.d.ts",
-            "development": "./index.ts",
-            "import": "./dist/userfiction-inventory.mjs"
+            "types": "./src/index.ts",
+            "default": "./src/index.ts"
         }
     },
     "files": [
-        "dist",
         "index.ts",
+        "src",
         "**/*.ts",
         "!**/*.test.ts",
         "!vite.config.ts",
-        "!demo"
+        "!demo",
+        "!vitest.config.ts",
+        "!**/*.d.ts",
+        "!Temp/**",
+        "!coverage/**"
     ],
     "publishConfig": {
         "access": "public",
         "registry": "https://registry.npmjs.org"
     },
     "scripts": {
-        "build": "vite build && tsc -p tsconfig.build.json",
-        "prepack": "npm run build",
         "test": "vitest run",
         "typecheck": "tsc --noEmit",
         "dev": "vite --config demo/vite.config.ts",
